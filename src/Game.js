@@ -9,7 +9,7 @@ class Game {
     this.ctx = ctx;
 
     this.updatePerSecond = 30;
-    this.drawPerSecond = 15;
+    this.drawPerSecond = 30;
     this._updateDelay = MILLISECOND_PER_SECOND / this.updatePerSecond;
     this._drawDelay = MILLISECOND_PER_SECOND / this.drawPerSecond;
 
@@ -17,7 +17,7 @@ class Game {
     this.inputManager = new Input();
 
     // Gameplay
-    this.player = new Player();
+    this.player = new Player([50, 50]);
   }
 
   onResize = (width, height) => {
@@ -27,8 +27,8 @@ class Game {
   };
 
   update = () => {
-    this.inputManager.newFrame();
     this.player.update(this.inputManager);
+    this.inputManager.newFrame();
   };
 
   draw = () => {

@@ -1,26 +1,82 @@
+const PLAYER_STATE = {
+  IDLE: 'IDLE',
+  WALK: 'WALK',
+};
+
 class Player {
-  constructor(props) {
+  constructor(position) {
     this.idleSpriteSheet = new Image();
     this.idleSpriteSheet.src = "res/mickael_idle.png";
 
-    this.state = "IDLE";
-    this.direction = DIRECTION.DOWN;
+    this.inputPriority = ['KeyW', 'KeyS', 'KeyA', 'KeyD', 'ArrowUp',
+      'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+
     this.animationCounter = 0;
+
+    this.state = PLAYER_STATE.IDLE;
+    this.direction = DIRECTION.DOWN;
+    this.speed = 1;
+    this.velocity = [0, 0];
+    this.position = position;
   }
 
   update = (inputManager) => {
-    if (inputManager.getKey('KeyW')) {
-      this.direction = DIRECTION.UP;
+
+    if (this.state === PLAYER_STATE.IDLE ||
+        this.state === PLAYER_STATE.WALK) {
+
+      // TODO check for attack first
+
+      for (const inputKey of this.inputPriority) {
+         if (inputManager.getKeyDown(inputKey)) {
+           const index = this.inputPriority.indexOf(inputKey);
+           this.inputPriority.splice(index, 1);
+           this.inputPriority.unshift(inputKey);
+         }
+      }
+
+      this.velocity = [0, 0];
+      this.state = PLAYER_STATE.IDLE;
+      for (const inputKey of this.inputPriority) {
+        if (inputManager.getKey(inputKey)) {
+          switch (inputKey) {
+            case 'KeyW':
+            case 'ArrowUp': {
+              this.state = PLAYER_STATE.WALK;
+              this.direction = DIRECTION.UP;
+              this.velocity = [0, -1];
+              break;
+            }
+            case 'KeyS':
+            case 'ArrowDown': {
+              this.state = PLAYER_STATE.WALK;
+              this.direction = DIRECTION.DOWN;
+              this.velocity = [0, 1];
+              break;
+            }
+            case 'KeyA':
+            case 'ArrowLeft': {
+              this.state = PLAYER_STATE.WALK;
+              this.direction = DIRECTION.LEFT;
+              this.velocity = [-1, 0];
+              break;
+            }
+            case 'KeyD':
+            case 'ArrowRight': {
+              this.state = PLAYER_STATE.WALK;
+              this.direction = DIRECTION.RIGHT;
+              this.velocity = [1, 0];
+              break;
+            }
+          }
+          break;
+        }
+      }
     }
-    if (inputManager.getKey('KeyS')) {
-       this.direction = DIRECTION.DOWN;
-    }
-    if (inputManager.getKey('KeyA')) {
-       this.direction = DIRECTION.LEFT;
-    }
-    if (inputManager.getKey('KeyD')) {
-       this.direction = DIRECTION.RIGHT;
-    }
+
+    this.position[0] += this.velocity[0] * this.speed;
+    this.position[1] += this.velocity[1] * this.speed;
+
     this.animationCounter += 1;
   };
 
@@ -47,13 +103,24 @@ class Player {
       }
     }
 
-    // IDLE
-    const spriteSize = 32;
-    const nbFrames = 4;
-    const column = Math.floor(this.animationCounter / 10) % (nbFrames);
+    let spriteSize = 32;
+    let column = 0;
+    switch (this.state) {
+      case PLAYER_STATE.IDLE: {
+        spriteSize = 32;
+        const nbFrames = 4;
+        column = Math.floor(this.animationCounter / 10) % (nbFrames);
+        break;
+      } case PLAYER_STATE.WALK: {
+        spriteSize = 32;
+        column = 0;
+        break;
+      }
+
+    }
 
     ctx.drawImage(this.idleSpriteSheet,
       column * spriteSize, line * spriteSize, spriteSize, spriteSize,
-      50, 50, spriteSize, spriteSize);
+      this.position[0], this.position[1], spriteSize, spriteSize);
   };
 }
