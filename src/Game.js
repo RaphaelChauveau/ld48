@@ -14,6 +14,8 @@ class Game {
     this._drawDelay = MILLISECOND_PER_SECOND / this.drawPerSecond;
 
 
+    this.inputManager = new Input();
+
     // Gameplay
     this.player = new Player();
   }
@@ -25,12 +27,9 @@ class Game {
   };
 
   update = () => {
-    this.player.update();
+    this.inputManager.newFrame();
+    this.player.update(this.inputManager);
   };
-
-
-
-
 
   draw = () => {
     this.ctx.fillStyle = 'white';

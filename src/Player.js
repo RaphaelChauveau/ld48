@@ -8,15 +8,25 @@ class Player {
     this.animationCounter = 0;
   }
 
-  update = () => {
+  update = (inputManager) => {
+    if (inputManager.getKey('KeyW')) {
+      this.direction = DIRECTION.UP;
+    }
+    if (inputManager.getKey('KeyS')) {
+       this.direction = DIRECTION.DOWN;
+    }
+    if (inputManager.getKey('KeyA')) {
+       this.direction = DIRECTION.LEFT;
+    }
+    if (inputManager.getKey('KeyD')) {
+       this.direction = DIRECTION.RIGHT;
+    }
     this.animationCounter += 1;
   };
 
   draw = (ctx) => {
     // ctx.drawImage(this.idleSpriteSheet, 50, 50);
     let line;
-    let column = 0;
-    let flip = 1;
 
     switch (this.direction) {
       case DIRECTION.DOWN: {
@@ -32,16 +42,16 @@ class Player {
         break
       }
       case DIRECTION.LEFT: {
-        line = 2;
-        flip = -1;
+        line = 3;
         break
       }
     }
-    const nbFrames = 4;
 
-    column = Math.floor(this.animationCounter / 10) % (nbFrames);
-
+    // IDLE
     const spriteSize = 32;
+    const nbFrames = 4;
+    const column = Math.floor(this.animationCounter / 10) % (nbFrames);
+
     ctx.drawImage(this.idleSpriteSheet,
       column * spriteSize, line * spriteSize, spriteSize, spriteSize,
       50, 50, spriteSize, spriteSize);
