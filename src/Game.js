@@ -14,8 +14,8 @@ class Game {
     this._drawDelay = MILLISECOND_PER_SECOND / this.drawPerSecond;
 
 
-    this.image = new Image();
-    this.image.src = "res/mickael_front.png";
+    // Gameplay
+    this.player = new Player();
   }
 
   onResize = (width, height) => {
@@ -25,7 +25,7 @@ class Game {
   };
 
   update = () => {
-    // console.log('update');
+    this.player.update();
   };
 
 
@@ -33,14 +33,14 @@ class Game {
 
 
   draw = () => {
-    // console.log('draw');
     this.ctx.fillStyle = 'white';
     this.ctx.fillRect(0, 0, 200, 150);
     this.ctx.strokeStyle = 'red';
     this.ctx.lineWidth = 1;
     this.ctx.strokeRect(10, 10, 180, 130);
 
-    this.ctx.drawImage(this.image, 100, 100);
+
+    this.player.draw(this.ctx);
   };
 
   run = () => {
