@@ -13,6 +13,9 @@
         #display {
             transform-origin: top left;
             border: 1px solid blue;
+
+            image-rendering: pixelated;
+            image-rendering: crisp-edges; /* FF */
         }
 
         #debug {
@@ -26,7 +29,7 @@
 </head>
 <body>
     <div id="wrapper">
-            <canvas id="display" width="800" height="600">
+            <canvas id="display" width="200" height="150">
                 Monkeee
             </canvas>
     </div>
@@ -38,8 +41,8 @@
 
     <script src="src/Game.js"></script>
     <script>
-        const GAME_WIDTH = 800;
-        const GAME_HEIGHT = 600;
+        const GAME_WIDTH = 200;
+        const GAME_HEIGHT = 150;
         const setCanvasSize = (canvas, viewportWidth, viewportHeight) => {
           const widthRatio = viewportWidth / GAME_WIDTH;
           const heightRatio = viewportHeight / GAME_HEIGHT;

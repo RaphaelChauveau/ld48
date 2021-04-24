@@ -4,14 +4,18 @@ class Game {
   constructor(ctx) {
     console.log('Game constructed');
 
-    this.width = 800;
-    this.height = 600;
+    this.width = 200;
+    this.height = 150;
     this.ctx = ctx;
 
     this.updatePerSecond = 30;
     this.drawPerSecond = 15;
     this._updateDelay = MILLISECOND_PER_SECOND / this.updatePerSecond;
     this._drawDelay = MILLISECOND_PER_SECOND / this.drawPerSecond;
+
+
+    this.image = new Image();
+    this.image.src = "res/mickael_front.png";
   }
 
   onResize = (width, height) => {
@@ -24,12 +28,19 @@ class Game {
     // console.log('update');
   };
 
+
+
+
+
   draw = () => {
     // console.log('draw');
     this.ctx.fillStyle = 'white';
-    this.ctx.fillRect(0, 0, 800, 600);
+    this.ctx.fillRect(0, 0, 200, 150);
     this.ctx.strokeStyle = 'red';
-    this.ctx.strokeRect(10, 10, 780, 580);
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeRect(10, 10, 180, 130);
+
+    this.ctx.drawImage(this.image, 100, 100);
   };
 
   run = () => {
