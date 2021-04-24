@@ -109,7 +109,7 @@ class Player {
       case PLAYER_STATE.IDLE: {
         spriteSize = 32;
         const nbFrames = 4;
-        column = Math.floor(this.animationCounter / 10) % (nbFrames);
+        column = Math.floor(this.animationCounter / 20) % (nbFrames);
         break;
       } case PLAYER_STATE.WALK: {
         spriteSize = 32;

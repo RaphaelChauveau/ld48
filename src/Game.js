@@ -8,8 +8,8 @@ class Game {
     this.height = 150;
     this.ctx = ctx;
 
-    this.updatePerSecond = 30;
-    this.drawPerSecond = 30;
+    this.updatePerSecond = 60;
+    this.drawPerSecond = 60;
     this._updateDelay = MILLISECOND_PER_SECOND / this.updatePerSecond;
     this._drawDelay = MILLISECOND_PER_SECOND / this.drawPerSecond;
 
@@ -18,6 +18,7 @@ class Game {
 
     // Gameplay
     this.player = new Player([50, 50]);
+    this.map = new Map();
   }
 
   onResize = (width, height) => {
@@ -34,10 +35,12 @@ class Game {
   draw = () => {
     this.ctx.fillStyle = 'white';
     this.ctx.fillRect(0, 0, 200, 150);
+
+    this.map.draw(this.ctx);
+
     this.ctx.strokeStyle = 'red';
     this.ctx.lineWidth = 1;
-    this.ctx.strokeRect(10, 10, 180, 130);
-
+    this.ctx.strokeRect(5.5, 5.5, 190, 140); // XXX why tf do I need .5 ? U.u
 
     this.player.draw(this.ctx);
   };
