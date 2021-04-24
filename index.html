@@ -3,23 +3,72 @@
     <style>
         body {
             margin: 0;
+            overflow: hidden;
         }
-
-        #display {
-            /*border: 1px solid;*/
+        #wrapper {
+            background-color: beige;
             width: 100%;
             height: 100%;
+        }
+        #display {
+            transform-origin: top left;
+            border: 1px solid blue;
+        }
+
+        #debug {
+            /*TODO visibility: hidden;*/
+            position: fixed;
+            top: 0;
+            left: 0;
+            border: 1px solid;
         }
     </style>
 </head>
 <body>
-    <div>
-        <canvas id="display">
-            Monkeee
-        </canvas>
+    <div id="wrapper">
+            <canvas id="display" width="800" height="600">
+                Monkeee
+            </canvas>
     </div>
 
+    <div id="debug">
+        -----debug-----
+
+    </div>
+
+    <script src="src/Game.js"></script>
     <script>
+        const GAME_WIDTH = 800;
+        const GAME_HEIGHT = 600;
+        const setCanvasSize = (canvas, viewportWidth, viewportHeight) => {
+          const widthRatio = viewportWidth / GAME_WIDTH;
+          const heightRatio = viewportHeight / GAME_HEIGHT;
+
+          if (widthRatio < heightRatio) {
+            canvas.style.width = innerWidth;
+            canvas.style.height = GAME_HEIGHT * widthRatio;
+            canvas.style.marginTop = (innerHeight - GAME_HEIGHT * widthRatio) / 2;
+            canvas.style.marginLeft = 0;
+          }
+          else {
+            canvas.style.width = GAME_WIDTH * heightRatio;
+            canvas.style.height = innerHeight;
+            canvas.style.marginTop = 0;
+            canvas.style.marginLeft = (innerWidth - GAME_WIDTH * heightRatio) / 2;
+          }
+        };
+
+        const canvas = document.getElementById('display');
+        const canvasCtx = canvas.getContext('2d');
+        setCanvasSize(canvas, window.innerWidth, window.innerHeight);
+        window.onresize = (e) => {
+          const viewPortWidth = e.currentTarget.innerWidth;
+          const viewPortHeight = e.currentTarget.innerHeight;
+          setCanvasSize(canvas, viewPortWidth, viewPortHeight);
+        };
+
+        const game = new Game(canvasCtx);
+        game.run();
 
     </script>
 
