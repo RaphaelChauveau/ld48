@@ -6,9 +6,9 @@ const PLAYER_STATE = {
 class Player {
   constructor(position) {
     this.idleSpriteSheet = new Image();
-    this.idleSpriteSheet.src = "res/mickael_idle.png";
+    this.idleSpriteSheet.src = "res/lucifer_idle.png";
     this.walkSpriteSheet = new Image();
-    this.walkSpriteSheet.src = "res/mickael_walk.png";
+    this.walkSpriteSheet.src = "res/lucifer_walk.png";
 
     this.inputPriority = ['KeyW', 'KeyS', 'KeyA', 'KeyD', 'ArrowUp',
       'ArrowDown', 'ArrowLeft', 'ArrowRight'];
