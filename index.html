@@ -30,20 +30,31 @@
 </head>
 <body>
     <div id="wrapper">
-            <canvas id="display" width="200" height="150">
-                Monkeee
-            </canvas>
+        <canvas id="display" width="200" height="150">
+            Monkeee
+        </canvas>
     </div>
 
     <div id="debug">
         -----debug-----
-
+        <br>
+        <span id="mouse-x"></span>
+        <br>
+        <span id="mouse-y"></span>
+        <script>
+            document.getElementById('display').onmousemove = (e) => {
+              const canvas = document.getElementById('display');
+              document.getElementById('mouse-x').innerText = (e.offsetX / canvas.offsetWidth * 200).toString();
+              document.getElementById('mouse-y').innerText = (e.offsetY / canvas.offsetHeight * 150).toString();
+            }
+        </script>
     </div>
 
     <script src="src/Enums.js"></script>
     <script src="src/Rect.js"></script>
     <script src="src/Input.js"></script>
     <script src="src/Player.js"></script>
+    <script src="src/Mob.js"></script>
     <script src="src/Map.js"></script>
     <script src="src/Game.js"></script>
 

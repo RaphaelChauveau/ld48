@@ -114,4 +114,19 @@ class Map {
       }
     }
   };
+
+  collideWithRect = (rect) => {
+    const tileX = Math.floor(rect.x / 16);
+    const tileY = Math.floor(rect.y / 16);
+    for (let x = tileX - 1; x <= tileX + 1; x += 1) {
+      for (let y = tileY - 1; y <= tileY + 1; y += 1) {
+        if (this.tiles[y][x] === 1) {
+          if (rect.intersects(x * 16, y * 16, 16, 16)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
 }

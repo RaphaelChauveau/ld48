@@ -17,7 +17,16 @@ class Game {
     this.inputManager = new Input();
 
     // Gameplay
+
     this.player = new Player([50, 50]);
+    this.mobs = [
+      new Mob([150, 50]),
+      new Mob([120, 90]),
+    ];
+    this.entities = [
+      ...this.mobs,
+      this.player,
+    ];
     this.map = new Map();
   }
 
@@ -29,6 +38,9 @@ class Game {
 
   update = () => {
     this.player.update(this.inputManager, this.map);
+    for (const mob of this.mobs) {
+      mob.update(this.map, this.player);
+    }
     this.inputManager.newFrame();
   };
 
@@ -42,7 +54,13 @@ class Game {
     this.ctx.lineWidth = 1;
     this.ctx.strokeRect(5.5, 5.5, 190, 140); // XXX why tf do I need .5 ? U.u
 
-    this.player.draw(this.ctx);
+    this.entities.sort((a, b) => (a.position[1] - b.position[1]));
+
+    for (const entity of this.entities) {
+      entity.draw(this.ctx);
+    }
+    //this.mob.draw(this.ctx);
+    //this.player.draw(this.ctx);
   };
 
   run = () => {

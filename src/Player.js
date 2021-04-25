@@ -19,7 +19,6 @@ class Player {
     this.state = PLAYER_STATE.IDLE;
     this.direction = DIRECTION.DOWN;
     this.speed = 1;
-    this.velocity = [0, 0];
     this.position = position;
     this.updateCollisionBox();
   }
@@ -29,23 +28,9 @@ class Player {
     this.collisionBox.y = this.position[1] + 1;
   };
 
-  collideWithMap = (map, rect) => {
-    const tileX = Math.floor(rect.x / 16);
-    const tileY = Math.floor(rect.y / 16);
-    for (let x = tileX - 1; x <= tileX + 1; x += 1) {
-      for (let y = tileY - 1; y <= tileY + 1; y += 1) {
-        if (map.tiles[y][x] === 1) {
-          if (rect.intersects(x * 16, y * 16, 16, 16)) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  };
-
   update = (inputManager, map) => {
 
+    let velocity = [0, 0];
     if (this.state === PLAYER_STATE.IDLE ||
         this.state === PLAYER_STATE.WALK) {
 
@@ -59,7 +44,6 @@ class Player {
          }
       }
 
-      this.velocity = [0, 0];
       this.state = PLAYER_STATE.IDLE;
       for (const inputKey of this.inputPriority) {
         if (inputManager.getKey(inputKey)) {
@@ -68,28 +52,28 @@ class Player {
             case 'ArrowUp': {
               this.state = PLAYER_STATE.WALK;
               this.direction = DIRECTION.UP;
-              this.velocity = [0, -1];
+              velocity = [0, -1];
               break;
             }
             case 'KeyS':
             case 'ArrowDown': {
               this.state = PLAYER_STATE.WALK;
               this.direction = DIRECTION.DOWN;
-              this.velocity = [0, 1];
+              velocity = [0, 1];
               break;
             }
             case 'KeyA':
             case 'ArrowLeft': {
               this.state = PLAYER_STATE.WALK;
               this.direction = DIRECTION.LEFT;
-              this.velocity = [-1, 0];
+              velocity = [-1, 0];
               break;
             }
             case 'KeyD':
             case 'ArrowRight': {
               this.state = PLAYER_STATE.WALK;
               this.direction = DIRECTION.RIGHT;
-              this.velocity = [1, 0];
+              velocity = [1, 0];
               break;
             }
           }
@@ -99,19 +83,15 @@ class Player {
     }
 
 
-    if (!this.collideWithMap(map, new Rect(
-      this.collisionBox.x + this.velocity[0] * this.speed,
-      this.collisionBox.y + this.velocity[1] * this.speed,
+    if (!map.collideWithRect(new Rect(
+      this.collisionBox.x + velocity[0] * this.speed,
+      this.collisionBox.y + velocity[1] * this.speed,
       this.collisionBox.w, this.collisionBox.h
     ))) {
-      this.position[0] += this.velocity[0] * this.speed;
-      this.position[1] += this.velocity[1] * this.speed;
+      this.position[0] += velocity[0] * this.speed;
+      this.position[1] += velocity[1] * this.speed;
       this.updateCollisionBox();
     }
-
-    //this.position[0] += this.velocity[0] * this.speed;
-    //this.position[1] += this.velocity[1] * this.speed;
-    // this.position = nextPosition;
 
     this.animationCounter += 1;
   };
