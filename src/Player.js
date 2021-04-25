@@ -10,6 +10,10 @@ class Player {
     this.idleSpriteSheet.src = "res/mickael_idle.png";
     this.walkSpriteSheet = new Image();
     this.walkSpriteSheet.src = "res/mickael_walk.png";
+    this.slashSpriteSheet = new Image();
+    this.slashSpriteSheet.src = "res/michael_slash.png";
+    this.swordSlashSpriteSheet = new Image();
+    this.swordSlashSpriteSheet.src = "res/sword_slash.png";
 
     this.inputPriority = ['KeyW', 'KeyS', 'KeyA', 'KeyD', 'ArrowUp',
       'ArrowDown', 'ArrowLeft', 'ArrowRight'];
@@ -32,57 +36,98 @@ class Player {
     this.hitBox.y = this.position[1] - 12;
   };
 
-  update = (inputManager, map) => {
+  update = (game) => {
+    const inputManager = game.inputManager;
+    const map = game.map;
+    const mobs = game.mobs;
 
     let velocity = [0, 0];
     if (this.state === PLAYER_STATE.IDLE ||
         this.state === PLAYER_STATE.WALK) {
 
-      // TODO check for attack first
+      // start attacking ?
+      if (inputManager.getKeyDown('Space')) {
+        this.state = PLAYER_STATE.ATTACKING;
+        this.attackedAt = this.animationCounter;
+      } else {
 
-      for (const inputKey of this.inputPriority) {
-         if (inputManager.getKeyDown(inputKey)) {
-           const index = this.inputPriority.indexOf(inputKey);
-           this.inputPriority.splice(index, 1);
-           this.inputPriority.unshift(inputKey);
-         }
-      }
-
-      this.state = PLAYER_STATE.IDLE;
-      for (const inputKey of this.inputPriority) {
-        if (inputManager.getKey(inputKey)) {
-          switch (inputKey) {
-            case 'KeyW':
-            case 'ArrowUp': {
-              this.state = PLAYER_STATE.WALK;
-              this.direction = DIRECTION.UP;
-              velocity = [0, -1];
-              break;
-            }
-            case 'KeyS':
-            case 'ArrowDown': {
-              this.state = PLAYER_STATE.WALK;
-              this.direction = DIRECTION.DOWN;
-              velocity = [0, 1];
-              break;
-            }
-            case 'KeyA':
-            case 'ArrowLeft': {
-              this.state = PLAYER_STATE.WALK;
-              this.direction = DIRECTION.LEFT;
-              velocity = [-1, 0];
-              break;
-            }
-            case 'KeyD':
-            case 'ArrowRight': {
-              this.state = PLAYER_STATE.WALK;
-              this.direction = DIRECTION.RIGHT;
-              velocity = [1, 0];
-              break;
-            }
+        for (const inputKey of this.inputPriority) {
+          if (inputManager.getKeyDown(inputKey)) {
+            const index = this.inputPriority.indexOf(inputKey);
+            this.inputPriority.splice(index, 1);
+            this.inputPriority.unshift(inputKey);
           }
-          break;
         }
+
+        this.state = PLAYER_STATE.IDLE;
+        for (const inputKey of this.inputPriority) {
+          if (inputManager.getKey(inputKey)) {
+            switch (inputKey) {
+              case 'KeyW':
+              case 'ArrowUp': {
+                this.state = PLAYER_STATE.WALK;
+                this.direction = DIRECTION.UP;
+                velocity = [0, -1];
+                break;
+              }
+              case 'KeyS':
+              case 'ArrowDown': {
+                this.state = PLAYER_STATE.WALK;
+                this.direction = DIRECTION.DOWN;
+                velocity = [0, 1];
+                break;
+              }
+              case 'KeyA':
+              case 'ArrowLeft': {
+                this.state = PLAYER_STATE.WALK;
+                this.direction = DIRECTION.LEFT;
+                velocity = [-1, 0];
+                break;
+              }
+              case 'KeyD':
+              case 'ArrowRight': {
+                this.state = PLAYER_STATE.WALK;
+                this.direction = DIRECTION.RIGHT;
+                velocity = [1, 0];
+                break;
+              }
+            }
+            break;
+          }
+        }
+      }
+    } else if (this.state === PLAYER_STATE.ATTACKING) {
+      const framesSinceAttack = this.animationCounter - this.attackedAt;
+      if (framesSinceAttack > 50) {
+        this.state = PLAYER_STATE.IDLE;
+      } else if (framesSinceAttack === 20) {
+        // TODO damage !
+        let damageBox;
+        switch (this.direction) {
+          case DIRECTION.UP: {
+            damageBox = new Rect(this.position[0] - 16, this.position[1] - 32, 32, 32);
+            break;
+          }
+          case DIRECTION.DOWN: {
+            damageBox = new Rect(this.position[0] - 16, this.position[1], 32, 32);
+            break;
+          }
+          case DIRECTION.LEFT: {
+            damageBox = new Rect(this.position[0] - 32, this.position[1] - 16, 32, 32);
+            break;
+          }
+          case DIRECTION.RIGHT: {
+            damageBox = new Rect(this.position[0], this.position[1] - 16, 32, 32);
+            break;
+          }
+        }
+
+        for (const mob of mobs) {
+          if (damageBox.intersectsRect(mob.hitBox)) {
+            console.log('MY HIT !!!');
+          }
+        }
+
       }
     }
 
@@ -139,6 +184,17 @@ class Player {
         const nbFrames = 4;
         column = Math.floor(this.animationCounter / 8) % (nbFrames);
         break;
+      } case PLAYER_STATE.ATTACKING: {
+        spriteSheet = this.slashSpriteSheet;
+        spriteSize = 32;
+
+        const framesSinceAttack = this.animationCounter - this.attackedAt;
+        if (framesSinceAttack < 20) {
+          column = 0;
+        } else {
+          column = 1;
+        }
+        break;
       }
 
     }
@@ -146,6 +202,12 @@ class Player {
     ctx.drawImage(spriteSheet,
       column * spriteSize, line * spriteSize, spriteSize, spriteSize,
       this.position[0] - spriteSize / 2 + 1, this.position[1] - spriteSize / 2, spriteSize, spriteSize);
+    if (this.state === PLAYER_STATE.ATTACKING) {
+      ctx.drawImage(this.swordSlashSpriteSheet,
+        column * 64, line * 64, 64, 64,
+        this.position[0] - 64 / 2 + 1, this.position[1] - 64 / 2, 64, 64);
+    }
+
 
     this.hitBox.draw(ctx, 'green');
     this.collisionBox.draw(ctx, 'blue');

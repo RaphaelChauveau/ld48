@@ -6,6 +6,7 @@ class Mob {
 
     this.animationCounter = 0;
     this.collisionBox = new Rect(0, 0, 11, 11);
+    this.hitBox = new Rect(0, 0, 15, 15);
 
     this.state = PLAYER_STATE.IDLE;
     this.direction = DIRECTION.DOWN;
@@ -17,6 +18,9 @@ class Mob {
   updateCollisionBox = () => {
     this.collisionBox.x = this.position[0] - 5;
     this.collisionBox.y = this.position[1] + 1;
+
+    this.hitBox.x = this.position[0] - 15 / 2;
+    this.hitBox.y = this.position[1] - 15 / 2;
   };
 
   update = (game, map, player) => {
@@ -121,6 +125,7 @@ class Mob {
       column * spriteSize, line * spriteSize, spriteSize, spriteSize,
       this.position[0] - spriteSize / 2 + 1, this.position[1] - spriteSize / 2, spriteSize, spriteSize);
 
+    this.hitBox.draw(ctx, 'green');
     this.collisionBox.draw(ctx, 'blue');
     ctx.strokeRect(this.position[0] + 0.5, this.position[1] + 0.5, 0.25, 0.25)
   };

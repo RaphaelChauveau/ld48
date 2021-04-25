@@ -39,7 +39,7 @@ class Game {
   };
 
   update = () => {
-    this.player.update(this.inputManager, this.map);
+    this.player.update(this);
     for (const mob of this.mobs) {
       mob.update(this, this.map, this.player);
     }
