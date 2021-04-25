@@ -1,5 +1,5 @@
 class Fireball {
-  constructor(position, direction, stasis=0) {
+  constructor(position, direction, stasis=0, damage=1) {
     this.spriteSheet = new Image();
     this.spriteSheet.src = 'res/fireball.png';
 
@@ -8,6 +8,7 @@ class Fireball {
     this.position = position;
     this.direction = direction;
     this.stasis = stasis;
+    this.damage = damage;
 
     this.hitBox = new Rect(0, 0, 4, 4);
 
@@ -43,7 +44,7 @@ class Fireball {
     const player = game.player;
     if (this.hitBox.intersectsRect(player.hitBox)) {
       console.log('HIT');
-      // TODO hurt player
+      player.hurt(this.damage);
       game.removeProjectile(this);
     }
 

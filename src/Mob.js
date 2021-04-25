@@ -13,6 +13,9 @@ class Mob {
     this.speed = 1;
     this.position = position;
     this.updateCollisionBox();
+
+    this.maxHp = 2;
+    this.hp = this.maxHp;
   }
 
   updateCollisionBox = () => {
@@ -23,7 +26,18 @@ class Mob {
     this.hitBox.y = this.position[1] - 15 / 2;
   };
 
+  hurt = (damage) => {
+    this.hp -= damage;
+    if (this.hp <= 0) {
+      this.hp = 0;
+      this.state = PLAYER_STATE.DEAD;
+    }
+  };
+
   update = (game, map, player) => {
+    if (this.state === PLAYER_STATE.DEAD) {
+      game.removeMob(this);
+    }
 
     const toPlayer = [
       player.position[0] - this.position[0],

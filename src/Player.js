@@ -2,10 +2,13 @@ const PLAYER_STATE = {
   IDLE: 'IDLE',
   WALK: 'WALK',
   ATTACKING: 'ATTACKING',
+  DEAD: 'DEAD',
 };
 
 class Player {
   constructor(position) {
+    this.deadSpriteSheet = new Image();
+    this.deadSpriteSheet.src = "res/michael_dead.png";
     this.idleSpriteSheet = new Image();
     this.idleSpriteSheet.src = "res/mickael_idle.png";
     this.walkSpriteSheet = new Image();
@@ -27,6 +30,9 @@ class Player {
     this.speed = 1;
     this.position = position;
     this.updateCollisionBox();
+
+    this.maxHp = 5;
+    this.hp = this.maxHp;
   }
 
   updateCollisionBox = () => {
@@ -34,6 +40,15 @@ class Player {
     this.collisionBox.y = this.position[1] + 1;
     this.hitBox.x = this.position[0] - 5;
     this.hitBox.y = this.position[1] - 12;
+  };
+
+  hurt = (damage) => {
+    this.hp -= damage;
+    if (this.hp <= 0) {
+      this.hp = 0;
+      this.state = PLAYER_STATE.DEAD;
+      // TODO you lose
+    }
   };
 
   update = (game) => {
@@ -124,10 +139,10 @@ class Player {
 
         for (const mob of mobs) {
           if (damageBox.intersectsRect(mob.hitBox)) {
+            mob.hurt(1);
             console.log('MY HIT !!!');
           }
         }
-
       }
     }
 
@@ -195,6 +210,11 @@ class Player {
           column = 1;
         }
         break;
+      } case PLAYER_STATE.DEAD: {
+        spriteSheet = this.deadSpriteSheet;
+        spriteSize = 32;
+        column = 0;
+        line = 0;
       }
 
     }
@@ -207,7 +227,6 @@ class Player {
         column * 64, line * 64, 64, 64,
         this.position[0] - 64 / 2 + 1, this.position[1] - 64 / 2, 64, 64);
     }
-
 
     this.hitBox.draw(ctx, 'green');
     this.collisionBox.draw(ctx, 'blue');

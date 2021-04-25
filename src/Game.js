@@ -4,6 +4,9 @@ class Game {
   constructor(ctx) {
     console.log('Game constructed');
 
+    this.heartSpriteSheet = new Image();
+    this.heartSpriteSheet.src = "res/heart.png";
+
     this.width = 200;
     this.height = 150;
     this.ctx = ctx;
@@ -64,6 +67,14 @@ class Game {
     for (const entity of this.entities) {
       entity.draw(this.ctx);
     }
+
+    for (let i = 0; i < this.player.maxHp; i += 1) {
+      if (this.player.hp > i) {
+        this.ctx.drawImage(this.heartSpriteSheet, 0, 0, 14, 12, 3 + i * 15, 3, 14, 12);
+      } else {
+        this.ctx.drawImage(this.heartSpriteSheet, 14, 0, 14, 12, 3 + i * 15, 3, 14, 12);
+      }
+    }
     //this.mob.draw(this.ctx);
     //this.player.draw(this.ctx);
   };
@@ -90,5 +101,11 @@ class Game {
   removeProjectile = (projectile) => {
     this.entities = this.entities.filter((p) => p !== projectile);
     this.projectiles = this.projectiles.filter((p) => p !== projectile);
+  };
+
+  removeMob = (mob) => {
+    this.entities = this.entities.filter((m) => m !== mob);
+    this.mobs = this.mobs.filter((m) => m !== mob);
+    // TODO no more mobs ?
   };
 }
