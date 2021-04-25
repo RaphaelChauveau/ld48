@@ -7,6 +7,8 @@ class Player {
   constructor(position) {
     this.idleSpriteSheet = new Image();
     this.idleSpriteSheet.src = "res/mickael_idle.png";
+    this.walkSpriteSheet = new Image();
+    this.walkSpriteSheet.src = "res/mickael_walk.png";
 
     this.inputPriority = ['KeyW', 'KeyS', 'KeyA', 'KeyD', 'ArrowUp',
       'ArrowDown', 'ArrowLeft', 'ArrowRight'];
@@ -105,21 +107,25 @@ class Player {
 
     let spriteSize = 32;
     let column = 0;
+    let spriteSheet;
     switch (this.state) {
       case PLAYER_STATE.IDLE: {
+        spriteSheet = this.idleSpriteSheet;
         spriteSize = 32;
         const nbFrames = 4;
         column = Math.floor(this.animationCounter / 20) % (nbFrames);
         break;
       } case PLAYER_STATE.WALK: {
+        spriteSheet = this.walkSpriteSheet;
         spriteSize = 32;
-        column = 0;
+        const nbFrames = 4;
+        column = Math.floor(this.animationCounter / 8) % (nbFrames);
         break;
       }
 
     }
 
-    ctx.drawImage(this.idleSpriteSheet,
+    ctx.drawImage(spriteSheet,
       column * spriteSize, line * spriteSize, spriteSize, spriteSize,
       this.position[0], this.position[1], spriteSize, spriteSize);
   };
