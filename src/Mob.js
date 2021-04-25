@@ -139,8 +139,8 @@ class Mob {
       column * spriteSize, line * spriteSize, spriteSize, spriteSize,
       this.position[0] - spriteSize / 2 + 1, this.position[1] - spriteSize / 2, spriteSize, spriteSize);
 
-    this.hitBox.draw(ctx, 'green');
-    this.collisionBox.draw(ctx, 'blue');
-    ctx.strokeRect(this.position[0] + 0.5, this.position[1] + 0.5, 0.25, 0.25)
+    // this.hitBox.draw(ctx, 'green');
+    // this.collisionBox.draw(ctx, 'blue');
+    // ctx.strokeRect(this.position[0] + 0.5, this.position[1] + 0.5, 0.25, 0.25)
   };
 }

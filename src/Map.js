@@ -23,8 +23,8 @@ const TILE_BY_PATTERN = {
 };
 
 class Map {
-  constructor() {
-    this.tiles = [
+  constructor(tiles) {
+    this.tiles = tiles || [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
       [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],

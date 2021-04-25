@@ -81,6 +81,6 @@ class Fireball {
     ctx.drawImage(this.spriteSheet,
       column * spriteSize, line * spriteSize, spriteSize, spriteSize,
       this.position[0] - spriteSize / 2 + 1, this.position[1] - spriteSize / 2, spriteSize, spriteSize);
-    ctx.strokeRect(this.hitBox.x + 0.5, this.hitBox.y + 0.5, this.hitBox.w, this.hitBox.h);
+    // ctx.strokeRect(this.hitBox.x + 0.5, this.hitBox.y + 0.5, this.hitBox.w, this.hitBox.h);
   };
 }

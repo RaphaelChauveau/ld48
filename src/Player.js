@@ -229,8 +229,8 @@ class Player {
         this.position[0] - 64 / 2 + 1, this.position[1] - 64 / 2, 64, 64);
     }
 
-    this.hitBox.draw(ctx, 'green');
-    this.collisionBox.draw(ctx, 'blue');
-    ctx.strokeRect(this.position[0] + 0.5, this.position[1] + 0.5, 0.25, 0.25);
+    // this.hitBox.draw(ctx, 'green');
+    // this.collisionBox.draw(ctx, 'blue');
+    // ctx.strokeRect(this.position[0] + 0.5, this.position[1] + 0.5, 0.25, 0.25);
   };
 }
