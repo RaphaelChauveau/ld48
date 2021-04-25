@@ -6,23 +6,45 @@ const PLAYER_STATE = {
 class Player {
   constructor(position) {
     this.idleSpriteSheet = new Image();
-    this.idleSpriteSheet.src = "res/lucifer_idle.png";
+    this.idleSpriteSheet.src = "res/mickael_idle.png";
     this.walkSpriteSheet = new Image();
-    this.walkSpriteSheet.src = "res/lucifer_walk.png";
+    this.walkSpriteSheet.src = "res/mickael_walk.png";
 
     this.inputPriority = ['KeyW', 'KeyS', 'KeyA', 'KeyD', 'ArrowUp',
       'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 
     this.animationCounter = 0;
+    this.collisionBox = new Rect(0, 0, 11, 11);
 
     this.state = PLAYER_STATE.IDLE;
     this.direction = DIRECTION.DOWN;
     this.speed = 1;
     this.velocity = [0, 0];
     this.position = position;
+    this.updateCollisionBox();
   }
 
-  update = (inputManager) => {
+  updateCollisionBox = () => {
+    this.collisionBox.x = this.position[0] - 5;
+    this.collisionBox.y = this.position[1] + 1;
+  };
+
+  collideWithMap = (map, rect) => {
+    const tileX = Math.floor(rect.x / 16);
+    const tileY = Math.floor(rect.y / 16);
+    for (let x = tileX - 1; x <= tileX + 1; x += 1) {
+      for (let y = tileY - 1; y <= tileY + 1; y += 1) {
+        if (map.tiles[y][x] === 1) {
+          if (rect.intersects(x * 16, y * 16, 16, 16)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  };
+
+  update = (inputManager, map) => {
 
     if (this.state === PLAYER_STATE.IDLE ||
         this.state === PLAYER_STATE.WALK) {
@@ -76,8 +98,20 @@ class Player {
       }
     }
 
-    this.position[0] += this.velocity[0] * this.speed;
-    this.position[1] += this.velocity[1] * this.speed;
+
+    if (!this.collideWithMap(map, new Rect(
+      this.collisionBox.x + this.velocity[0] * this.speed,
+      this.collisionBox.y + this.velocity[1] * this.speed,
+      this.collisionBox.w, this.collisionBox.h
+    ))) {
+      this.position[0] += this.velocity[0] * this.speed;
+      this.position[1] += this.velocity[1] * this.speed;
+      this.updateCollisionBox();
+    }
+
+    //this.position[0] += this.velocity[0] * this.speed;
+    //this.position[1] += this.velocity[1] * this.speed;
+    // this.position = nextPosition;
 
     this.animationCounter += 1;
   };
@@ -127,6 +161,9 @@ class Player {
 
     ctx.drawImage(spriteSheet,
       column * spriteSize, line * spriteSize, spriteSize, spriteSize,
-      this.position[0], this.position[1], spriteSize, spriteSize);
+      this.position[0] - spriteSize / 2 + 1, this.position[1] - spriteSize / 2, spriteSize, spriteSize);
+
+    this.collisionBox.draw(ctx, 'blue');
+    ctx.strokeRect(this.position[0] + 0.5, this.position[1] + 0.5, 0.25, 0.25)
   };
 }

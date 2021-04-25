@@ -28,7 +28,7 @@ class Game {
   };
 
   update = () => {
-    this.player.update(this.inputManager);
+    this.player.update(this.inputManager, this.map);
     this.inputManager.newFrame();
   };
 
