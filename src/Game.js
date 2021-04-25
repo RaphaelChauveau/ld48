@@ -1,5 +1,10 @@
 const MILLISECOND_PER_SECOND = 1000;
 
+const GAME_STATE = {
+  PLAYING: "PLAYING",
+  DEAD: "DEAD",
+};
+
 class Game {
   constructor(ctx) {
     console.log('Game constructed');
@@ -20,7 +25,11 @@ class Game {
     this.inputManager = new Input();
 
     // Gameplay
+    this.initLevel();
+  }
 
+  initLevel = () => {
+    this.state = GAME_STATE.PLAYING;
     this.player = new Player([50, 50]);
     this.mobs = [
       new Mob([150, 50]),
@@ -33,7 +42,7 @@ class Game {
       this.player,
     ];
     this.map = new Map();
-  }
+  };
 
   onResize = (width, height) => {
     console.log('Game resize', width, height);
@@ -49,6 +58,15 @@ class Game {
     for (const projectile of this.projectiles) {
       projectile.update(this);
     }
+
+    if (this.state === GAME_STATE.DEAD) {
+      if (this.inputManager.getKeyDown("Enter")) {
+        console.log("REPLAY !!!");
+        this.initLevel();
+        // TODO reinit everything
+      }
+    }
+
     this.inputManager.newFrame();
   };
 
@@ -75,8 +93,15 @@ class Game {
         this.ctx.drawImage(this.heartSpriteSheet, 14, 0, 14, 12, 3 + i * 15, 3, 14, 12);
       }
     }
-    //this.mob.draw(this.ctx);
-    //this.player.draw(this.ctx);
+
+    if (this.state === GAME_STATE.DEAD) {
+      this.ctx.font = "15px Arial Black";
+      this.ctx.fillStyle = "red";
+      this.ctx.textAlign = "center";
+      this.ctx.fillText("You died", 100, 50);
+      this.ctx.font = "13px Arial Black";
+      this.ctx.fillText("Press Enter...", 100, 75);
+    }
   };
 
   run = () => {
@@ -108,4 +133,8 @@ class Game {
     this.mobs = this.mobs.filter((m) => m !== mob);
     // TODO no more mobs ?
   };
+
+  playerDead = () => {
+    this.state = GAME_STATE.DEAD;
+  }
 }

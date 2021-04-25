@@ -44,7 +44,7 @@ class Fireball {
     const player = game.player;
     if (this.hitBox.intersectsRect(player.hitBox)) {
       console.log('HIT');
-      player.hurt(this.damage);
+      player.hurt(game, this.damage);
       game.removeProjectile(this);
     }
 

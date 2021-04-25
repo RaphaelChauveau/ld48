@@ -42,11 +42,12 @@ class Player {
     this.hitBox.y = this.position[1] - 12;
   };
 
-  hurt = (damage) => {
+  hurt = (game, damage) => {
     this.hp -= damage;
     if (this.hp <= 0) {
       this.hp = 0;
       this.state = PLAYER_STATE.DEAD;
+      game.playerDead();
       // TODO you lose
     }
   };
