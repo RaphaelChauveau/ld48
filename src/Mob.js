@@ -19,7 +19,7 @@ class Mob {
     this.collisionBox.y = this.position[1] + 1;
   };
 
-  update = (map, player) => {
+  update = (game, map, player) => {
 
     const toPlayer = [
       player.position[0] - this.position[0],
@@ -41,11 +41,30 @@ class Mob {
     }
 
     let velocity = [0, 0];
+
+
+    const distToPlayer = vectorLength(toPlayer);
+
     if (this.state === PLAYER_STATE.IDLE ||
         this.state === PLAYER_STATE.WALK) {
+      // TODO if in reach => attack
 
       // TODO IA STUFF
-
+      if (distToPlayer > 80) {
+        velocity = DIRECTION_VECTOR[this.direction];
+      } else {
+        console.log('FIRE');
+        this.attackedAt = this.animationCounter;
+        this.state = PLAYER_STATE.ATTACKING;
+        const unit = getUnitVector(toPlayer);
+        game.addProjectile(new Fireball(
+          [this.position[0], this.position[1]],
+          unit, 30))
+      }
+    } else if (this.state === PLAYER_STATE.ATTACKING) {
+      if (this.animationCounter - this.attackedAt > 60 * 3) {
+        this.state = PLAYER_STATE.IDLE;
+      }
     }
 
 
@@ -88,6 +107,7 @@ class Mob {
     let column = 0;
     let spriteSheet;
     switch (this.state) {
+      case PLAYER_STATE.ATTACKING:
       case PLAYER_STATE.IDLE: {
         spriteSheet = this.spriteSheet;
         spriteSize = 32;
@@ -95,7 +115,6 @@ class Mob {
         column = Math.floor(this.animationCounter / 20) % (nbFrames);
         break;
       }
-
     }
 
     ctx.drawImage(spriteSheet,

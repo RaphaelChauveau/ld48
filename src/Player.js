@@ -1,6 +1,7 @@
 const PLAYER_STATE = {
   IDLE: 'IDLE',
   WALK: 'WALK',
+  ATTACKING: 'ATTACKING',
 };
 
 class Player {
@@ -15,6 +16,7 @@ class Player {
 
     this.animationCounter = 0;
     this.collisionBox = new Rect(0, 0, 11, 11);
+    this.hitBox = new Rect(0, 0, 11, 24);
 
     this.state = PLAYER_STATE.IDLE;
     this.direction = DIRECTION.DOWN;
@@ -26,6 +28,8 @@ class Player {
   updateCollisionBox = () => {
     this.collisionBox.x = this.position[0] - 5;
     this.collisionBox.y = this.position[1] + 1;
+    this.hitBox.x = this.position[0] - 5;
+    this.hitBox.y = this.position[1] - 12;
   };
 
   update = (inputManager, map) => {
@@ -143,7 +147,8 @@ class Player {
       column * spriteSize, line * spriteSize, spriteSize, spriteSize,
       this.position[0] - spriteSize / 2 + 1, this.position[1] - spriteSize / 2, spriteSize, spriteSize);
 
+    this.hitBox.draw(ctx, 'green');
     this.collisionBox.draw(ctx, 'blue');
-    ctx.strokeRect(this.position[0] + 0.5, this.position[1] + 0.5, 0.25, 0.25)
+    ctx.strokeRect(this.position[0] + 0.5, this.position[1] + 0.5, 0.25, 0.25);
   };
 }

@@ -23,8 +23,10 @@ class Game {
       new Mob([150, 50]),
       new Mob([120, 90]),
     ];
+    this.projectiles = [];
     this.entities = [
       ...this.mobs,
+      ...this.projectiles,
       this.player,
     ];
     this.map = new Map();
@@ -39,7 +41,10 @@ class Game {
   update = () => {
     this.player.update(this.inputManager, this.map);
     for (const mob of this.mobs) {
-      mob.update(this.map, this.player);
+      mob.update(this, this.map, this.player);
+    }
+    for (const projectile of this.projectiles) {
+      projectile.update(this);
     }
     this.inputManager.newFrame();
   };
@@ -75,5 +80,15 @@ class Game {
     if (this._drawInterval !== null) {
       window.clearInterval(this._drawInterval);
     }
+  };
+
+  addProjectile = (projectile) => {
+    this.entities.push(projectile);
+    this.projectiles.push(projectile);
+  };
+
+  removeProjectile = (projectile) => {
+    this.entities = this.entities.filter((p) => p !== projectile);
+    this.projectiles = this.projectiles.filter((p) => p !== projectile);
   };
 }
